@@ -6,12 +6,19 @@
 /////
 
 bool mogoOn = false;
+
+int funcPower = 0.33;
+int power;
+int turn;
+int Left;
+int Right;
+
 // Chassis constructor
 ez::Drive chassis(
     // These are your drive motors, the first motor is used for sensing!
     {12, -13, 14},  // Left Chassis Ports (negative port will reverse it!)
-    {-1, 5, -3},    // Right Chassis Ports (negative port will reverse it!)
-    10,     // IMU Port
+    {1, -7, 3},    // Right Chassis Ports (negative port will reverse it!)
+    8,     // IMU Port
     3.25,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
     360);  // Wheel RPM = cartridge * (motor gear / wheel gear)
 
@@ -247,7 +254,15 @@ void opcontrol() {
   while (true) {
     ez_template_extras();
 
-    chassis.opcontrol_arcade_standard(ez::SPLIT);  // Standard split arcade
+    power = master.get_analog(ANALOG_LEFT_Y);
+    turn = master.get_analog(ANALOG_RIGHT_X);
+    Left = funcPower * (power - turn) + (1 - funcPower) * (power + turn) ^ 3 / 16129;   // Curve function for drive train Left side
+    Right = -(funcPower * (power + turn) + (1 - funcPower) * (power - turn) ^ 3 / 16129);  // Curve function for drive train Right side
+
+    for (int i = 0; i < 3; i++) {
+      chassis.left_motors[i].move(Left);
+      chassis.right_motors[i].move(Right);
+    }
 
     // mogo controls
     if (master.get_digital_new_press(DIGITAL_A)) {

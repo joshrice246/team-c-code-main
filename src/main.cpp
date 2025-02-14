@@ -11,7 +11,6 @@ ez::Drive chassis(
     // These are your drive motors, the first motor is used for sensing!
     {12, -13, 14},  // Left Chassis Ports (negative port will reverse it!)
     {-1, 5, -3},    // Right Chassis Ports (negative port will reverse it!)
-
     10,     // IMU Port
     3.25,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
     360);  // Wheel RPM = cartridge * (motor gear / wheel gear)
@@ -263,12 +262,18 @@ void opcontrol() {
 
     // intake controls
     if (master.get_digital(DIGITAL_R2)) {
+      hooks.move(127);
       intake.move(127);
     } else if (master.get_digital(DIGITAL_L2)) {
       intake.move(-127);
+      hooks.move(-127);
     } else {
       intake.move(0);
+      hooks.move(0);
     }
+    
+    //Penis
+
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }
 }

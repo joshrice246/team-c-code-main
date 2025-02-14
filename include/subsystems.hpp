@@ -7,7 +7,8 @@ extern Drive chassis;
 
 // Your motors, sensors, etc. should go here.  Below are examples
 
- inline pros::Motor intake(-9);
+ inline pros::Motor intake(-2);
+ inline pros::Motor hooks(-9);
  inline pros::adi::DigitalOut mogo('A');
 
  
